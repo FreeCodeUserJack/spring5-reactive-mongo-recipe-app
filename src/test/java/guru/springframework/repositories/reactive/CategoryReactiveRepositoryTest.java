@@ -8,7 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringRunner.class)
 @DataMongoTest
@@ -23,9 +24,9 @@ public class CategoryReactiveRepositoryTest {
     }
 
     @Test
-    public void testSave() {
+    public void testSave() throws Exception {
         Category category = new Category();
-        category.setDescription("some description");
+        category.setDescription("Foo");
 
         categoryReactiveRepository.save(category).block();
 
@@ -35,14 +36,14 @@ public class CategoryReactiveRepositoryTest {
     }
 
     @Test
-    public void findByDescription() {
+    public void testFindByDescription() throws Exception {
         Category category = new Category();
-        category.setDescription("fewf");
+        category.setDescription("Foo");
 
-        categoryReactiveRepository.save(category).block();
+        categoryReactiveRepository.save(category).then().block();
 
-        Category fetchedCategory = categoryReactiveRepository.findByDescription("fewf").block();
+        Category fetchedCat = categoryReactiveRepository.findByDescription("Foo").block();
 
-        assertNotNull(fetchedCategory);
+        assertNotNull(fetchedCat.getId());
     }
 }
