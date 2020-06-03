@@ -137,8 +137,8 @@ public class IngredientControllerTest {
 
     @Test
     public void testDeleteIngredient() throws Exception {
-
-        when(ingredientService.deleteById(anyString(), anyString())).thenReturn(Mono.empty());
+        // have to return back a Mono.empty() b/c IngredientServiceImpl returns back Mono.empty() and Controller expects it
+        when(ingredientService.deleteById(anyString(), anyString())).thenReturn(Mono.empty()); // else .block() won't work
 
         //then
         mockMvc.perform(get("/recipe/2/ingredient/3/delete")
