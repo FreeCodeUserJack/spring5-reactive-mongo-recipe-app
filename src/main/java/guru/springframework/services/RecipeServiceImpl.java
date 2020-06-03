@@ -30,7 +30,6 @@ public class RecipeServiceImpl implements RecipeService {
     @Override
     public Flux<Recipe> getRecipes() {
         log.debug("I'm in the service");
-
         return recipeReactiveRepository.findAll(); // returns Flux by default, no need to change anything
     }
 
@@ -46,36 +45,26 @@ public class RecipeServiceImpl implements RecipeService {
         return recipeReactiveRepository.findById(id)
                 .map(recipe -> {
                     RecipeCommand command = recipeToRecipeCommand.convert(recipe);
+
                     command.getIngredients().forEach(ing -> {
                         ing.setRecipeId(command.getId());
                     });
+
                     return command;
                 });
-
-//        RecipeCommand recipeCommand = recipeToRecipeCommand.convert(findById(id).block()); // how to convert without blocking?
-
-        //enhance command object with id value
-//        if(recipeCommand.getIngredients() != null && recipeCommand.getIngredients().size() > 0){
-//            recipeCommand.getIngredients().forEach(rc -> {
-//                rc.setRecipeId(recipeCommand.getId());
-//            });
-//        }
-//
-//        return Mono.just(recipeCommand);
     }
 
     @Override
-    public Mono<RecipeCommand> saveRecipeCommand(RecipeCommand command) {
-        Recipe detachedRecipe = recipeCommandToRecipe.convert(command);
+    public Mono<RecipeCommand>  saveRecipeCommand(RecipeCommand command) {
 
-        Recipe savedRecipe = recipeReactiveRepository.save(detachedRecipe).block();
-        log.debug("Saved RecipeId:" + savedRecipe.getId());
-        return Mono.just(recipeToRecipeCommand.convert(savedRecipe));
+        return recipeReactiveRepository.save(recipeCommandToRecipe.convert(command))
+                .map(recipeToRecipeCommand::convert);
     }
 
     @Override
     public Mono<Void> deleteById(String idToDelete) {
         recipeReactiveRepository.deleteById(idToDelete).block();
+
         return Mono.empty();
     }
 }

@@ -100,10 +100,10 @@ public class RecipeServiceImplTest {
         //given
         String idToDelete = "2";
 
-        //when
-        when(recipeService.deleteById(anyString())).thenReturn(Mono.empty());
+        when(recipeReactiveRepository.deleteById(anyString())).thenReturn(Mono.empty());
 
-        recipeService.deleteById(idToDelete).block();
+        //when
+        recipeService.deleteById(idToDelete);
 
         //then
         verify(recipeReactiveRepository, times(1)).deleteById(anyString());
