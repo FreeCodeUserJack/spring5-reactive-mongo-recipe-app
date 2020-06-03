@@ -67,8 +67,7 @@ public class IngredientControllerTest {
         IngredientCommand ingredientCommand = new IngredientCommand();
 
         //when
-        when(ingredientService.findByRecipeIdAndIngredientId(anyString(), anyString()))
-                .thenReturn(Mono.just(ingredientCommand));
+        when(ingredientService.findByRecipeIdAndIngredientId(anyString(), anyString())).thenReturn(Mono.just(ingredientCommand));
 
         //then
         mockMvc.perform(get("/recipe/1/ingredient/2/show"))
@@ -104,8 +103,7 @@ public class IngredientControllerTest {
         IngredientCommand ingredientCommand = new IngredientCommand();
 
         //when
-        when(ingredientService.findByRecipeIdAndIngredientId(anyString(), anyString()))
-                .thenReturn(Mono.just(ingredientCommand));
+        when(ingredientService.findByRecipeIdAndIngredientId(anyString(), anyString())).thenReturn(Mono.just(ingredientCommand));
         when(unitOfMeasureService.listAllUoms()).thenReturn(Flux.just(new UnitOfMeasureCommand()));
 
         //then
@@ -139,6 +137,8 @@ public class IngredientControllerTest {
 
     @Test
     public void testDeleteIngredient() throws Exception {
+
+        when(ingredientService.deleteById(anyString(), anyString())).thenReturn(Mono.empty());
 
         //then
         mockMvc.perform(get("/recipe/2/ingredient/3/delete")
