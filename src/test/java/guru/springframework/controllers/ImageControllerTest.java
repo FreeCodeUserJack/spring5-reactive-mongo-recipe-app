@@ -64,6 +64,10 @@ public class ImageControllerTest {
                 new MockMultipartFile("imagefile", "testing.txt", "text/plain",
                         "Spring Framework Guru".getBytes());
 
+        // need this line b/c in ImageController, imageService.saveImageFil().block();
+            // the block() part requires a Mono or else it will be NPE
+        when(imageService.saveImageFile(anyString(), any())).thenReturn(Mono.empty());
+
         mockMvc.perform(multipart("/recipe/1/image").file(multipartFile))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(header().string("Location", "/recipe/1/show"));
