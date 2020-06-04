@@ -16,11 +16,9 @@ import java.io.IOException;
 @Service
 public class ImageServiceImpl implements ImageService {
 
-
     private final RecipeReactiveRepository recipeReactiveRepository;
 
     public ImageServiceImpl(RecipeReactiveRepository recipeReactiveService) {
-
         this.recipeReactiveRepository = recipeReactiveService;
     }
 
@@ -42,6 +40,7 @@ public class ImageServiceImpl implements ImageService {
                         recipe.setImage(byteObjects);
 
                         return recipe;
+
                     } catch (IOException e) {
                         e.printStackTrace();
                         throw new RuntimeException(e);
