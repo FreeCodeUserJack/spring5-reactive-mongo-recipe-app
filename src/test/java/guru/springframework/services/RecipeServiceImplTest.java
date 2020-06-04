@@ -57,7 +57,6 @@ public class RecipeServiceImplTest {
         verify(recipeReactiveRepository, never()).findAll();
     }
 
-    // not found exception class won't work anymore
 
     @Test
     public void getRecipeCommandByIdTest() throws Exception {
@@ -82,8 +81,8 @@ public class RecipeServiceImplTest {
     public void getRecipesTest() throws Exception {
 
         Recipe recipe = new Recipe();
-        HashSet recipesData = new HashSet();
-        recipesData.add(recipe);
+        HashSet receipesData = new HashSet();
+        receipesData.add(recipe);
 
         when(recipeService.getRecipes()).thenReturn(Flux.just(recipe));
 

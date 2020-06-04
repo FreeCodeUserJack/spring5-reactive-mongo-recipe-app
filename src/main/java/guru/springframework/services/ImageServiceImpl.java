@@ -18,8 +18,8 @@ public class ImageServiceImpl implements ImageService {
 
     private final RecipeReactiveRepository recipeReactiveRepository;
 
-    public ImageServiceImpl(RecipeReactiveRepository recipeReactiveService) {
-        this.recipeReactiveRepository = recipeReactiveService;
+    public ImageServiceImpl(RecipeReactiveRepository recipeService) {
+        this.recipeReactiveRepository = recipeService;
     }
 
     @Override
@@ -46,10 +46,10 @@ public class ImageServiceImpl implements ImageService {
                         throw new RuntimeException(e);
                     }
                 });
-//                .publish(recipeMono -> recipeReactiveRepository.save(recipeMono.block()));
-        // the publish immediately will not trigger the test and .save with recipeReactiveRepository is not triggered
+
         recipeReactiveRepository.save(recipeMono.block()).block();
 
         return Mono.empty();
+
     }
 }

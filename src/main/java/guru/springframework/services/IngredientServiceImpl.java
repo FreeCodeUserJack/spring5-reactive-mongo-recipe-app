@@ -27,8 +27,7 @@ public class IngredientServiceImpl implements IngredientService {
 
     public IngredientServiceImpl(IngredientToIngredientCommand ingredientToIngredientCommand,
                                  IngredientCommandToIngredient ingredientCommandToIngredient,
-                                 RecipeReactiveRepository recipeReactiveRepository,
-                                 UnitOfMeasureReactiveRepository unitOfMeasureRepository) {
+                                 RecipeReactiveRepository recipeReactiveRepository, UnitOfMeasureReactiveRepository unitOfMeasureRepository) {
         this.ingredientToIngredientCommand = ingredientToIngredientCommand;
         this.ingredientCommandToIngredient = ingredientCommandToIngredient;
         this.recipeReactiveRepository = recipeReactiveRepository;
@@ -38,16 +37,18 @@ public class IngredientServiceImpl implements IngredientService {
     @Override
     public Mono<IngredientCommand> findByRecipeIdAndIngredientId(String recipeId, String ingredientId) {
 
-        return recipeReactiveRepository
-                .findById(recipeId) // flatmap turns 1 observable into many observables then flatten to 1 observable
-                .flatMapIterable(Recipe::getIngredients)
-                .filter(ingredient -> ingredient.getId().equalsIgnoreCase(ingredientId))
-                .single()
+        return recipeReactiveRepository.findById(recipeId)
+                .map(recipe -> recipe.getIngredients()
+                        .stream()
+                        .filter(ingredient -> ingredient.getId().equalsIgnoreCase(ingredientId))
+                        .findFirst())
+                .filter(Optional::isPresent)
                 .map(ingredient -> {
-                    IngredientCommand command = ingredientToIngredientCommand.convert(ingredient);
+                    IngredientCommand command = ingredientToIngredientCommand.convert(ingredient.get());
                     command.setRecipeId(recipeId);
                     return command;
                 });
+
     }
 
     @Override

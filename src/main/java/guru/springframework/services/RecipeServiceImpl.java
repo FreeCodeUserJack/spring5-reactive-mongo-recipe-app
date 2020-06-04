@@ -30,27 +30,26 @@ public class RecipeServiceImpl implements RecipeService {
     @Override
     public Flux<Recipe> getRecipes() {
         log.debug("I'm in the service");
-        return recipeReactiveRepository.findAll(); // returns Flux by default, no need to change anything
+        return recipeReactiveRepository.findAll();
     }
 
     @Override
     public Mono<Recipe> findById(String id) {
-// IF NOT FOUND, HANDLE UPSTREAM in the Controller
         return recipeReactiveRepository.findById(id);
     }
 
     @Override
     public Mono<RecipeCommand> findCommandById(String id) {
 
-        return recipeReactiveRepository.findById(id)
+       return recipeReactiveRepository.findById(id)
                 .map(recipe -> {
-                    RecipeCommand command = recipeToRecipeCommand.convert(recipe);
+                    RecipeCommand recipeCommand = recipeToRecipeCommand.convert(recipe);
 
-                    command.getIngredients().forEach(ing -> {
-                        ing.setRecipeId(command.getId());
+                    recipeCommand.getIngredients().forEach(rc -> {
+                        rc.setRecipeId(recipeCommand.getId());
                     });
 
-                    return command;
+                    return recipeCommand;
                 });
     }
 
